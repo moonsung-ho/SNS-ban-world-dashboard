@@ -78,15 +78,24 @@ window.U = (function () {
   }
   function normalize(s) { return String(s || '').toLowerCase().replace(/\s+/g, ''); }
 
-  /* 대비를 고려한 글자색 선택 */
-  function inkFor(hex) {
-    const c = String(hex || '').trim();
-    const m = /^#?([0-9a-f]{6})$/i.exec(c);
-    if (!m) return 'var(--text)';
+  /* 배경색 위에서 대비가 더 좋은 글자색을 고릅니다(WCAG 상대휘도 기준). */
+  const INK_DARK = '#1A1210';
+  function srgbLum(hex) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim());
+    if (!m) return null;
     const n = parseInt(m[1], 16);
-    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
-    const L = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-    return L > 0.58 ? '#15181B' : '#FFFFFF';
+    const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => {
+      const c = v / 255;
+      return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2];
+  }
+  function inkFor(hex) {
+    const L = srgbLum(hex);
+    if (L === null) return 'var(--text)';
+    const onDark  = (L + 0.05) / (srgbLum(INK_DARK) + 0.05);
+    const onWhite = 1.05 / (L + 0.05);
+    return onDark >= onWhite ? INK_DARK : '#FFFFFF';
   }
 
   function csvEscape(v) {

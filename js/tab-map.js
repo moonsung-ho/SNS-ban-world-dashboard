@@ -113,7 +113,7 @@ window.TAB_MAP = (function () {
         if (st === 'enforced') enf++;
         if (st === 'enforced' || st === 'passed') passed++;
       });
-      count.textContent = `시행 ${enf}개국 · 통과 이상 ${passed}개국`;
+      count.textContent = `시행 ${enf}개국 · 법 제정 ${passed}개국`;
     }
     const slider = U.$('#mapTime');
     if (slider && +slider.value !== idx) slider.value = idx;
@@ -141,6 +141,15 @@ window.TAB_MAP = (function () {
     if (!box) return;
     if (months.length < 3) { box.hidden = true; return; }
     box.hidden = false;
+
+    // 재생 기능이 있다는 걸 카드 설명에서 알려 줍니다.
+    const sub = U.$('#mapSub');
+    if (sub) {
+      const from = (months[0] || '').slice(0, 4);
+      sub.textContent = '국가를 클릭하면 상세 정보가 열립니다. 면적이 작은 국가는 점으로 표시됩니다. ' +
+        `지도 아래 재생 버튼을 누르면 ${from}년부터 지금까지 규제가 번져 온 과정을 볼 수 있습니다.`;
+    }
+
     const slider = U.$('#mapTime');
     slider.max = String(months.length - 1);
     slider.value = String(months.length - 1);

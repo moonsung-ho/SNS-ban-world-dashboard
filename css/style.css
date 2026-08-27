@@ -22,25 +22,25 @@
   --shadow-lg:0 24px 60px rgba(16,20,24,.20), 0 4px 12px rgba(16,20,24,.10);
 
   /* 추진 단계 순서형 램프 (연함 → 진함) */
-  --st-none:#D6DDE2;
-  --st-debate:#F6C9BA;
-  --st-bill:#ECA087;
-  --st-passed:#CD583A;
-  --st-enforced:#8C2216;
-  --st-nodata:#F1F3F5;
+  --st-none:#B9C3CB;
+  --st-debate:#F9D2C4;
+  --st-bill:#EC9070;
+  --st-passed:#C9503A;
+  --st-enforced:#7C1B10;
+  --st-nodata:#F1F4F6;
 
-  --st-none-ink:#4B535A;
-  --st-debate-ink:#7B2E1B;
-  --st-bill-ink:#3B1206;
+  --st-none-ink:#333B42;
+  --st-debate-ink:#5E2416;
+  --st-bill-ink:#3A1206;
   --st-passed-ink:#FFFFFF;
   --st-enforced-ink:#FFFFFF;
 
   /* 여론조사 막대 — 찬반을 붉은색/회색으로 구분 */
-  --poll-pro:#CD583A;      --poll-pro-ink:#FFFFFF;
+  --poll-pro:#C9503A;      --poll-pro-ink:#FFFFFF;
   --poll-con:#A7B0B7;      --poll-con-ink:#15181B;
 
   --map-stroke:#FFFFFF;
-  --map-sea:#E6EAEE;
+  --map-sea:#E2E7EC;
   --grid:#E3E7EA;
 
   --ok:#2F7A4B;
@@ -74,20 +74,21 @@
     --shadow-md:0 4px 14px rgba(0,0,0,.45);
     --shadow-lg:0 24px 60px rgba(0,0,0,.6);
 
-    --st-none:#363D43;
-    --st-debate:#7C3B2C;
-    --st-bill:#A75440;
-    --st-passed:#D46A4C;
-    --st-enforced:#F0705A;
-    --st-nodata:#1D2126;
+    /* 라이트 모드와 같은 방향 — 단계가 올라갈수록 진한 색 */
+    --st-none:#363E45;
+    --st-debate:#E3BFB2;
+    --st-bill:#DA8568;
+    --st-passed:#C04D37;
+    --st-enforced:#9E2415;
+    --st-nodata:#1B1F23;
 
-    --st-none-ink:#C4CAD0;
-    --st-debate-ink:#F7D8CD;
-    --st-bill-ink:#1B0A05;
-    --st-passed-ink:#1C0B05;
-    --st-enforced-ink:#210C07;
+    --st-none-ink:#C9D0D6;
+    --st-debate-ink:#1A1210;
+    --st-bill-ink:#1A1210;
+    --st-passed-ink:#FFFFFF;
+    --st-enforced-ink:#FFFFFF;
 
-    --poll-pro:#D46A4C;      --poll-pro-ink:#1C0B05;
+    --poll-pro:#C04D37;      --poll-pro-ink:#FFFFFF;
     --poll-con:#5C666E;      --poll-con-ink:#EDEFF1;
 
     --map-stroke:#101215;
@@ -107,9 +108,9 @@
   --shadow-sm:0 1px 2px rgba(0,0,0,.4);
   --shadow-md:0 4px 14px rgba(0,0,0,.45);
   --shadow-lg:0 24px 60px rgba(0,0,0,.6);
-  --st-none:#363D43; --st-debate:#7C3B2C; --st-bill:#A75440; --st-passed:#D46A4C; --st-enforced:#F0705A; --st-nodata:#1D2126;
-  --st-none-ink:#C4CAD0; --st-debate-ink:#F7D8CD; --st-bill-ink:#1B0A05; --st-passed-ink:#1C0B05; --st-enforced-ink:#210C07;
-  --poll-pro:#D46A4C; --poll-pro-ink:#1C0B05;
+  --st-none:#363E45; --st-debate:#E3BFB2; --st-bill:#DA8568; --st-passed:#C04D37; --st-enforced:#9E2415; --st-nodata:#1B1F23;
+  --st-none-ink:#C9D0D6; --st-debate-ink:#1A1210; --st-bill-ink:#1A1210; --st-passed-ink:#FFFFFF; --st-enforced-ink:#FFFFFF;
+  --poll-pro:#C04D37; --poll-pro-ink:#FFFFFF;
   --poll-con:#5C666E; --poll-con-ink:#EDEFF1;
   --map-stroke:#101215; --map-sea:#14181B; --grid:#2A3036;
   --ok:#6FC08A; --warn:#E0866B; --bad:#EE7A63;

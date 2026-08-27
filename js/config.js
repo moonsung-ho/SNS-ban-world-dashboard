@@ -7,12 +7,12 @@ window.APP_CONFIG = {
      'sample' : js/sample-data.js 의 예시 데이터를 사용 (개발용)
      'sheets' : 아래 구글 시트에서 실시간으로 읽어옴 (운영용)
      ──────────────────────────────────────────────────────── */
-  dataSource: 'sample',
+  dataSource: 'sheets',
 
   /* 구글 시트 문서 ID
      https://docs.google.com/spreadsheets/d/ ★여기★ /edit
      시트는 "웹에 게시" 또는 "링크가 있는 모든 사용자 — 뷰어"로 공개해야 합니다. */
-  sheetId: 'YOUR_GOOGLE_SHEET_ID_HERE',
+  sheetId: '1kuS6DpyQw6sjmJug7f6fCTulq5XifGSUgE6EQ0N5-MM',
 
   /* 워크시트(탭) 이름 — 구글 시트 하단 탭 이름과 정확히 일치해야 합니다.
      시트별 열 구성은 README.md 와 sheets/*.csv 템플릿을 참고하세요. */

@@ -104,10 +104,17 @@ window.DATA = (function () {
     };
   }
 
+  /* 주소에 ?refresh=1 을 붙이면 캐시를 무시하고 새로 읽습니다.
+     시트를 고친 뒤 바로 확인할 때 씁니다. */
+  const FORCE_REFRESH = /[?&]refresh=1/.test(location.search);
+
+  /* 캐시 키에 시트 ID 를 넣어, 다른 문서로 바꿨을 때 이전 문서의 캐시가 섞이지 않게 합니다. */
+  const cacheKey = name => `snsban:${CFG.sheetId || 'csv'}:${name}`;
+
   function cacheGet(key) {
-    if (!CFG.cacheMinutes) return null;
+    if (!CFG.cacheMinutes || FORCE_REFRESH) return null;
     try {
-      const raw = localStorage.getItem('snsban:' + key);
+      const raw = localStorage.getItem(cacheKey(key));
       if (!raw) return null;
       const o = JSON.parse(raw);
       if (Date.now() - o.t > CFG.cacheMinutes * 60000) return null;
@@ -116,7 +123,24 @@ window.DATA = (function () {
   }
   function cacheSet(key, v) {
     if (!CFG.cacheMinutes) return;
-    try { localStorage.setItem('snsban:' + key, JSON.stringify({ t: Date.now(), v })); } catch (e) {}
+    try { localStorage.setItem(cacheKey(key), JSON.stringify({ t: Date.now(), v })); } catch (e) {}
+  }
+  /* 예전 방식(시트 ID 없는) 캐시 키가 남아 있으면 한 번만 정리합니다. */
+  (function dropLegacyCache() {
+    try {
+      Object.keys(localStorage).forEach(k => {
+        if (!k.startsWith('snsban:') || k === 'snsban:theme') return;
+        if (k.split(':').length === 2) localStorage.removeItem(k);   // snsban:<시트이름>
+      });
+    } catch (e) {}
+  })();
+
+  function cacheClear() {
+    try {
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('snsban:') && k !== 'snsban:theme')
+        .forEach(k => localStorage.removeItem(k));
+    } catch (e) {}
   }
 
   async function fetchSheet(sheetName) {
@@ -278,6 +302,18 @@ window.DATA = (function () {
     return o;
   }
 
+  /* 읽기는 됐는데 쓸 수 있는 행이 0건이면 대개 탭에 엉뚱한 표가 들어간 경우입니다.
+     어느 탭에 어떤 열이 들어 있는지 콘솔에 그대로 알려 줍니다. */
+  function checkShape(sheetName, raw, normalized, needCol) {
+    if (raw.length && !normalized.length) {
+      console.warn(
+        `[시트 "${sheetName}"] ${raw.length}행을 읽었지만 쓸 수 있는 행이 0건입니다.\n` +
+        `  "${needCol}" 열이 있는지 확인하세요.\n` +
+        `  실제 들어온 열: ${Object.keys(raw[0]).join(', ')}`);
+    }
+    return normalized;
+  }
+
   /* ── 진입점 ─────────────────────────────────────────────── */
   async function loadFromSheets() {
     const S = CFG.sheets;
@@ -294,8 +330,8 @@ window.DATA = (function () {
         title: meta.title || 'SNS 금지법 전 세계 추진 현황',
         aiNote: meta.ai_note || window.SAMPLE_DATA.meta.aiNote
       },
-      countries: normCountries(r.countries),
-      timeline: normTimeline(r.timeline),
+      countries: checkShape(S.countries, r.countries, normCountries(r.countries), 'iso3'),
+      timeline: checkShape(S.timeline, r.timeline, normTimeline(r.timeline), 'date'),
       bypass: normBypass(r.bypass),
       efficacy: {
         dumbbell: normDumbbell(r.efficacyUsage),
@@ -328,5 +364,5 @@ window.DATA = (function () {
     }
   }
 
-  return { load, parseCSV, parseGviz };
+  return { load, parseCSV, parseGviz, cacheClear };
 })();
