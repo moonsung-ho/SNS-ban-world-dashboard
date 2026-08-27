@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>임베드 코드 만들기 · 토끼풀</title>
+<link rel="icon" type="image/jpeg" href="assets/favicon.jpeg">
+<link rel="apple-touch-icon" href="assets/favicon.jpeg">
+<link rel="stylesheet" href="css/style.css?v=1">
+<style>
+  body{background:var(--bg)}
+  .wrap{max-width:1180px; margin:0 auto; padding:26px 24px 60px}
+  .page-head{margin-bottom:22px}
+  .page-head h1{font-size:22px; letter-spacing:-.02em}
+  .page-head p{font-size:13px; color:var(--text-3); margin-top:5px}
+  .cols{display:grid; grid-template-columns:340px minmax(0,1fr); gap:20px; align-items:start}
+  @media (max-width:940px){ .cols{grid-template-columns:1fr} }
+  .fieldset{padding:4px 18px 18px}
+  .f{margin-top:15px}
+  .f > label{display:block; font-size:11px; font-weight:700; letter-spacing:.05em;
+             color:var(--text-3); text-transform:uppercase; margin-bottom:6px}
+  .f select, .f input[type=text], .f input[type=number]{
+    width:100%; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:8px; padding:8px 10px; font:inherit; font-size:13.5px; color:var(--text)}
+  .radios{display:flex; flex-direction:column; gap:5px}
+  .radios label, .check{display:flex; align-items:center; gap:8px; font-size:13.5px; cursor:pointer}
+  .radios label span small{color:var(--text-3); font-size:12px}
+  .hint{font-size:12px; color:var(--text-3); margin-top:6px; line-height:1.55}
+  .snippet{
+    width:100%; min-height:150px; font-family:var(--mono); font-size:12px; line-height:1.65;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
+    padding:13px 14px; color:var(--text); resize:vertical; white-space:pre; overflow-x:auto}
+  .btn{appearance:none; border:0; border-radius:9px; padding:8px 16px; font-size:13.5px;
+       font-weight:650; cursor:pointer; background:var(--accent); color:#fff}
+  :root[data-theme="dark"] .btn{color:#0C1A11}
+  .btn.ghost{background:var(--surface-2); border:1px solid var(--border); color:var(--text-2)}
+  .btnrow{display:flex; gap:8px; align-items:center; padding:0 18px 18px}
+  .ok{font-size:12.5px; color:var(--accent); opacity:0; transition:opacity .2s}
+  .ok.show{opacity:1}
+  .preview-frame{width:100%; border:0; display:block; background:var(--surface)}
+  .preview-box{border-top:1px solid var(--border); background:var(--surface-2); padding:16px}
+  .device{margin:0 auto; background:var(--surface); border:1px solid var(--border);
+          border-radius:10px; overflow:hidden; transition:max-width .2s}
+  .urlbar{font-family:var(--mono); font-size:11.5px; color:var(--text-3);
+          padding:9px 18px 0; word-break:break-all}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-head">
+    <h1>임베드 코드 만들기</h1>
+    <p>기사에 넣을 형태를 고르면 붙여넣을 코드가 아래에 만들어집니다. 오른쪽에서 실제 모습을 확인할 수 있습니다.</p>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <div class="card-head"><h2 class="card-title">설정</h2></div>
+      <div class="fieldset">
+
+        <div class="f">
+          <label>무엇을 넣을까요</label>
+          <div class="radios" id="viewRadios">
+            <label><input type="radio" name="view" value="all" checked>
+              <span>전체 대시보드 <small>— 탭 6개 모두</small></span></label>
+            <label><input type="radio" name="view" value="tab">
+              <span>탭 하나만</span></label>
+            <label><input type="radio" name="view" value="some">
+              <span>고른 탭만</span></label>
+            <label><input type="radio" name="view" value="country">
+              <span>국가 하나만 <small>— 상세 카드</small></span></label>
+          </div>
+        </div>
+
+        <div class="f" id="tabRow" hidden>
+          <label>탭</label>
+          <select id="tabSel"></select>
+        </div>
+
+        <div class="f" id="tabsRow" hidden>
+          <label>탭 고르기</label>
+          <div class="radios" id="tabsChecks"></div>
+        </div>
+
+        <div class="f" id="countryRow" hidden>
+          <label>국가</label>
+          <select id="countrySel"></select>
+        </div>
+
+        <div class="f">
+          <label>테마</label>
+          <select id="themeSel">
+            <option value="">방문자 설정 따름</option>
+            <option value="light">밝게 고정</option>
+            <option value="dark">어둡게 고정</option>
+          </select>
+        </div>
+
+        <div class="f">
+          <label>높이</label>
+          <label class="check"><input type="checkbox" id="autoH" checked>
+            <span>내용에 맞게 자동 조절 <small>(스크립트 필요)</small></span></label>
+          <div style="margin-top:8px" id="fixedHRow" hidden>
+            <input type="number" id="fixedH" value="720" min="240" step="20">
+          </div>
+          <p class="hint" id="autoHint">자동 조절 스크립트를 한 번만 넣으면 페이지 안의 모든 임베드에 적용됩니다.</p>
+        </div>
+
+        <div class="f">
+          <label>기타</label>
+          <label class="check"><input type="checkbox" id="creditChk" checked>
+            <span>하단에 출처·디스클레이머 표시</span></label>
+        </div>
+
+        <div class="f">
+          <label>배포 주소</label>
+          <input type="text" id="baseUrl" placeholder="https://example.com/sns-dashboard/">
+          <p class="hint">대시보드를 올린 실제 주소를 넣으세요. 비워 두면 지금 보고 있는 주소를 씁니다.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head">
+          <div><h2 class="card-title">붙여넣을 코드</h2>
+          <p class="card-sub">기사 본문의 원하는 위치에 그대로 붙여넣으세요.</p></div>
+        </div>
+        <div style="padding:0 18px 14px"><textarea class="snippet" id="snippet" readonly spellcheck="false"></textarea></div>
+        <div class="btnrow">
+          <button class="btn" id="copyBtn" type="button">코드 복사</button>
+          <button class="btn ghost" id="openBtn" type="button">새 창에서 열기</button>
+          <span class="ok" id="copiedMsg">복사했습니다</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><h2 class="card-title">미리보기</h2></div>
+          <div class="filter-chips" id="widthChips"></div>
+        </div>
+        <div class="urlbar" id="urlBar"></div>
+        <div class="preview-box">
+          <div class="device" id="device">
+            <iframe class="preview-frame" id="preview" title="미리보기" height="720"
+                    scrolling="no" data-tokipul-embed></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/d3.v7.min.js"></script>
+<script src="js/config.js?v=1"></script>
+<script src="js/util.js?v=1"></script>
+<script src="js/data.js?v=1"></script>
+<script src="js/sample-data.js?v=1"></script>
+<script src="embed-resizer.js"></script>
+<script src="js/embed-builder.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>예시 데이터 → 구글 시트용 CSV 만들기</title>
+<style>
+ body{font:15px/1.6 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+      max-width:760px;margin:40px auto;padding:0 20px;color:#1E1C18;background:#F7F6F2}
+ h1{font-size:20px;margin:0 0 6px} p{color:#5A554B;font-size:13.5px;margin:0 0 20px}
+ ol{padding-left:20px;font-size:13.5px;color:#5A554B} li{margin-bottom:5px}
+ .row{display:flex;align-items:center;gap:12px;padding:9px 12px;border:1px solid #E0DDD4;
+      border-radius:9px;background:#fff;margin-bottom:7px}
+ .nm{font-weight:650;flex:0 0 190px;font-family:ui-monospace,Menlo,monospace;font-size:13px}
+ .ct{color:#8A8377;font-size:12.5px;flex:1}
+ a.dl{font-size:13px;text-decoration:none;background:#2F7A4B;color:#fff;padding:5px 13px;border-radius:7px}
+</style></head><body>
+<h1>예시 데이터 → 구글 시트용 CSV</h1>
+<p>아래 파일을 내려받아 구글 시트의 각 워크시트에 <b>파일 › 가져오기 › 업로드</b>로 넣으면 바로 운영 데이터로 쓸 수 있습니다.</p>
+<ol>
+  <li>구글 시트 새 문서를 만들고, 하단 탭 이름을 파일 이름과 똑같이 지정합니다.</li>
+  <li>각 탭에서 <b>파일 › 가져오기 › 업로드</b> → 해당 CSV 선택 → <b>현재 시트 바꾸기</b>.</li>
+  <li>문서를 <b>공유 › 링크가 있는 모든 사용자(뷰어)</b>로 바꿉니다.</li>
+  <li>주소창의 <code>/d/</code> 와 <code>/edit</code> 사이 문자열을 <code>js/config.js</code> 의 <code>sheetId</code> 에 넣고,
+      <code>dataSource</code> 를 <code>'sheets'</code> 로 바꿉니다.</li>
+</ol>
+<div id="out"></div>
+<script src="../js/config.js"></script>
+<script src="../js/sample-data.js"></script>
+<script src="dump-sheets.js"></script>
+</body></html>
