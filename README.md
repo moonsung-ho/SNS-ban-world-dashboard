@@ -35,6 +35,7 @@
 | `embed-resizer.js` | 기사 페이지에 넣는 높이 자동 조절 스크립트 |
 | `js/embed.js` | 임베드 모드 동작 |
 | `js/share.js` | SNS 공유 버튼 |
+| `js/sources.js` | 푸터 '출처 보기' 팝업 |
 | `sheets/*.csv` | 구글 시트에 그대로 넣을 수 있는 데이터 템플릿 |
 | `assets/logo.svg` | 토끼풀 로고 (교체 시 아래 참고) |
 | `data/world-110m.json` | 세계지도 (ISO alpha-3 코드가 주입된 TopoJSON) |
@@ -48,10 +49,10 @@
 ### 1. 시트 만들기
 
 1. 구글 시트 새 문서를 만듭니다.
-2. 하단 워크시트 탭을 아래 10개 이름으로 만듭니다. **이름이 정확히 일치해야 합니다.**
+2. 하단 워크시트 탭을 아래 11개 이름으로 만듭니다. **이름이 정확히 일치해야 합니다.**
 
    `countries` · `timeline` · `bypass` · `efficacy_usage` · `efficacy_cards` ·
-   `korea_stats` · `korea_bills` · `korea_usage` · `korea_polls` · `meta`
+   `korea_stats` · `korea_bills` · `korea_usage` · `korea_polls` · `sources` · `meta`
 
 3. 각 탭에서 **파일 › 가져오기 › 업로드**로 `sheets/` 폴더의 같은 이름 CSV를 넣고
    **현재 시트 바꾸기**를 선택합니다. 예시 데이터가 그대로 들어갑니다.
@@ -162,6 +163,22 @@ sheetId: '복사한_문서_ID',
 ### `korea_bills` — 발의 법안
 `name`, `proposer`, `party`, `date`, `age`, `step`, `summary`, `url`.
 `step` 은 진행 단계 번호(1부터). 단계 이름은 `meta` 시트의 `korea_steps` 로 바꿉니다.
+
+### `sources` — 참고 자료 목록 (푸터 '출처 보기')
+
+열은 **두 개**뿐입니다.
+
+| 열 | 설명 |
+|---|---|
+| `title` | 자료 제목 |
+| `url` | 주소 |
+
+국가별 출처(`countries` 시트의 `sources` 열)와 **별개**입니다.
+개별 국가에 매기 애매한 자료 — 국제기구 보고서, 통계 원자료, 배경 기사 등 — 를 여기에 한꺼번에 넣으면
+푸터 **'출처 보기'** 팝업의 "전체 참고 자료"에 나열됩니다.
+같은 팝업 아래쪽에는 `countries` 시트의 국가별 출처가 국가 단위로 묶여 함께 표시됩니다.
+
+> 이 시트는 **없어도 됩니다.** 탭을 만들지 않으면 국가별 출처만 표시되고 나머지는 그대로 동작합니다.
 
 ### `korea_usage` / `korea_polls`
 - `korea_usage`: `group`(연령대), `value`(%)

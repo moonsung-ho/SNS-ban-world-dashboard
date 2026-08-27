@@ -26,6 +26,7 @@ window.APP_CONFIG = {
     koreaBills:     'korea_bills',      // 대한민국 — 발의 법안
     koreaUsage:     'korea_usage',      // 대한민국 — 연령대별 이용률
     koreaPolls:     'korea_polls',      // 대한민국 — 여론조사
+    sources:        'sources',          // 참고 자료 목록 (제목/URL) — 푸터 '출처 보기'
     meta:           'meta'              // AI 활용 고지·최종 갱신일 등 (key/value)
   },
 

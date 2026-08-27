@@ -675,6 +675,23 @@ window.SAMPLE_DATA = {
     ]
   },
 
+  /* ── 참고 자료 (푸터 '출처 보기') ─────────────────────────
+     국가별 상세에 붙는 출처와 별개로, 전체적으로 참고한 자료를 여기에 모읍니다. */
+  sources: [
+    { title:'Online Safety Amendment (Social Media Minimum Age) Act 2024', url:'https://www.legislation.gov.au/C2024A00119/asmade/text' },
+    { title:'eSafety Commissioner — Social media age restrictions', url:'https://www.esafety.gov.au/' },
+    { title:'Online Safety Act 2023 (UK)', url:'https://www.legislation.gov.uk/ukpga/2023/50/contents' },
+    { title:'Ofcom — Protection of Children Codes of Practice', url:'https://www.ofcom.org.uk/online-safety/' },
+    { title:'유럽연합 디지털서비스법(DSA) 원문', url:'https://eur-lex.europa.eu/eli/reg/2022/2065/oj' },
+    { title:'유럽의회 결의 — 미성년자 온라인 보호 (2025)', url:'https://www.europarl.europa.eu/' },
+    { title:'OECD — Children in the Digital Environment', url:'https://www.oecd.org/digital/' },
+    { title:'유니세프 — Children and Digital Marketing', url:'https://www.unicef.org/' },
+    { title:'국회 의안정보시스템', url:'https://likms.assembly.go.kr/bill/main.do' },
+    { title:'방송통신위원회 — 청소년 보호 정책', url:'https://www.kcc.go.kr/' },
+    { title:'한국지능정보사회진흥원 — 스마트폰 과의존 실태조사', url:'https://www.nia.or.kr/' },
+    { title:'Pew Research Center — Teens, Social Media and Technology', url:'https://www.pewresearch.org/' }
+  ],
+
   /* ── 대한민국 상세 ─────────────────────────────────────── */
   korea: {
     stats:[

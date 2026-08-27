@@ -107,6 +107,13 @@
     if (U.$('#headerShareOne')) window.SHARE.buildSingle(U.$('#headerShareOne'), opts);
   }
 
+  /* ── 푸터 '출처 보기' ── */
+  function setupSources() {
+    const btn = U.$('#sourcesBtn');
+    if (!btn) return;
+    btn.addEventListener('click', () => window.SOURCES.open(state));
+  }
+
   /* ── 헤더 높이를 탭 sticky 오프셋에 반영 ── */
   function syncHeaderHeight() {
     const h = U.$('.site-header');
@@ -149,6 +156,7 @@
     applyMeta(data);
 
     setupHomeLink();
+    setupSources();
     syncHeaderHeight();
 
     const E = window.EMBED;

@@ -196,6 +196,23 @@ window.MODAL = (function () {
     U.$('#modalClose').focus();
   }
 
+  /* 국가 상세가 아닌 임의의 내용을 같은 팝업 틀에 띄웁니다. */
+  function openNode(node) {
+    if (!node) return;
+    lastFocus = document.activeElement;
+    pendingSpark = null;
+    U.clear(bodyEl);
+    bodyEl.appendChild(node);
+    backdrop.hidden = false;
+    if (window.EMBED && window.EMBED.on) {
+      window.EMBED.placeOverlay();
+      window.EMBED.requestViewport();
+    }
+    document.body.style.overflow = 'hidden';
+    modalEl.scrollTop = 0;
+    U.$('#modalClose').focus();
+  }
+
   function close() {
     backdrop.hidden = true;
     document.body.style.overflow = '';
@@ -206,5 +223,5 @@ window.MODAL = (function () {
   backdrop.addEventListener('mousedown', e => { if (e.target === backdrop) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !backdrop.hidden) close(); });
 
-  return { open, close, build };
+  return { open, openNode, close, build };
 })();

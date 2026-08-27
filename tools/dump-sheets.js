@@ -35,6 +35,8 @@
 
     korea_usage: toCSV(['group','value'], D.korea.usage.map(u => [u.group, u.value])),
 
+    sources: toCSV(['title','url'], (D.sources || []).map(x => [x.title, x.url])),
+
     korea_polls: toCSV(['question','org','date','pro','con','neu'],
       D.korea.polls.map(p => [p.question, p.org, p.date, p.pro, p.con, p.neu])),
 

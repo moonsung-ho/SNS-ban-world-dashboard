@@ -143,16 +143,25 @@ window.DATA = (function () {
     } catch (e) {}
   }
 
-  async function fetchSheet(sheetName) {
+  async function fetchSheet(sheetName, optional) {
     const cached = cacheGet(sheetName);
     if (cached) return cached;
-    const { url, kind } = sheetUrl(sheetName);
-    const res = await fetch(url, { credentials: 'omit' });
-    if (!res.ok) throw new Error(`시트 "${sheetName}" 을(를) 불러오지 못했습니다 (HTTP ${res.status}).`);
-    const text = await res.text();
-    const rows = kind === 'csv' ? parseCSV(text) : parseGviz(text);
-    cacheSet(sheetName, rows);
-    return rows;
+    try {
+      const { url, kind } = sheetUrl(sheetName);
+      const res = await fetch(url, { credentials: 'omit' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      const rows = kind === 'csv' ? parseCSV(text) : parseGviz(text);
+      cacheSet(sheetName, rows);
+      return rows;
+    } catch (err) {
+      // 선택 시트는 없어도 대시보드가 동작해야 합니다.
+      if (optional) {
+        console.info(`[시트 "${sheetName}"] 없거나 읽지 못해 건너뜁니다. (${err.message})`);
+        return [];
+      }
+      throw new Error(`시트 "${sheetName}" 을(를) 불러오지 못했습니다. (${err.message})`);
+    }
   }
 
   /* ── 정규화 ─────────────────────────────────────────────── */
@@ -293,6 +302,14 @@ window.DATA = (function () {
     };
   }
 
+  /* 참고 자료 목록 — 제목과 URL 두 열이면 충분합니다. */
+  function normSources(rows) {
+    return rows.map(r => ({
+      title: pickText(r, ['title', '제목']),
+      url:   (r.url || r['url'] || r['주소'] || r['링크'] || '').trim()
+    })).filter(x => x.title || x.url);
+  }
+
   function normMeta(rows) {
     const o = {};
     rows.forEach(r => {
@@ -318,8 +335,11 @@ window.DATA = (function () {
   async function loadFromSheets() {
     const S = CFG.sheets;
     const names = ['countries','timeline','bypass','efficacyUsage','efficacyCards',
-                   'koreaStats','koreaBills','koreaUsage','koreaPolls','meta'];
-    const results = await Promise.all(names.map(n => fetchSheet(S[n])));
+                   'koreaStats','koreaBills','koreaUsage','koreaPolls','sources','meta'];
+    /* 없어도 되는 시트 — 탭을 만들지 않아도 나머지는 정상 동작합니다. */
+    const OPTIONAL = ['sources'];
+    const results = await Promise.all(
+      names.map(n => fetchSheet(S[n], OPTIONAL.includes(n))));
     const r = Object.fromEntries(names.map((n, i) => [n, results[i]]));
     const meta = normMeta(r.meta);
 
@@ -337,7 +357,8 @@ window.DATA = (function () {
         dumbbell: normDumbbell(r.efficacyUsage),
         cards: normCards(r.efficacyCards)
       },
-      korea: normKorea(r.koreaBills, r.koreaUsage, r.koreaPolls, r.koreaStats, meta)
+      korea: normKorea(r.koreaBills, r.koreaUsage, r.koreaPolls, r.koreaStats, meta),
+      sources: normSources(r.sources)
     };
   }
 
