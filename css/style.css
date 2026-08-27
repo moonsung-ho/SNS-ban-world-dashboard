@@ -292,6 +292,7 @@ main{max-width:var(--maxw); margin:0 auto; padding:22px 24px 60px}
 .dot-marker:hover{stroke:var(--text)}
 .country.is-home{stroke:var(--text); stroke-width:1.5; paint-order:stroke}
 .dot-marker.is-home{stroke:var(--text); stroke-width:2.2}
+.home-leader{stroke:var(--text); stroke-width:1.2; opacity:.55; pointer-events:none}
 .home-label{
   font-size:12px; font-weight:750; fill:var(--text); pointer-events:none;
   paint-order:stroke; stroke:var(--surface); stroke-width:3.4; stroke-linejoin:round;

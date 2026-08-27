@@ -263,9 +263,12 @@ window.TAB_MAP = (function () {
         gRoot.attr('transform', ev.transform);
         gLand.attr('stroke-width', 0.4 / ev.transform.k);
         gDots.selectAll('circle').attr('r', dotR / Math.sqrt(ev.transform.k));
-        if (gLabels) gLabels.selectAll('text')
-          .style('font-size', (12 / ev.transform.k) + 'px')
-          .style('stroke-width', (3.4 / ev.transform.k) + 'px');
+        if (gLabels) {
+          gLabels.selectAll('text')
+            .style('font-size', (12 / ev.transform.k) + 'px')
+            .style('stroke-width', (3.4 / ev.transform.k) + 'px');
+          gLabels.selectAll('line').style('stroke-width', (1.2 / ev.transform.k) + 'px');
+        }
       });
     svg.call(zoom);
 
@@ -288,10 +291,20 @@ window.TAB_MAP = (function () {
     const xy = dot ? dot.xy : (feature ? pathGen.centroid(feature) : null);
     if (!xy || !isFinite(xy[0])) return;
 
+    const off = window.APP_CONFIG.homeLabelOffset || [22, 34];
+    const k = (svg.node().viewBox.baseVal.width || 1022) / 1022;   // 지도 폭에 비례
+    const lx = xy[0] + off[0] * k, ly = xy[1] + off[1] * k;
+
     gLabels = gRoot.append('g');
+    // 이름표가 이웃 나라를 덮지 않도록 살짝 떨어뜨리고 연결선으로 잇습니다.
+    gLabels.append('line')
+      .attr('class', 'home-leader')
+      .attr('x1', xy[0]).attr('y1', xy[1]).attr('x2', lx).attr('y2', ly);
     gLabels.append('text')
       .attr('class', 'home-label')
-      .attr('x', xy[0] + 9).attr('y', xy[1] - 7)
+      .attr('x', lx + (off[0] < 0 ? -3 : 3)).attr('y', ly)
+      .attr('text-anchor', off[0] < 0 ? 'end' : 'start')
+      .attr('dominant-baseline', 'middle')
       .text(c ? c.name : home);
   }
 
