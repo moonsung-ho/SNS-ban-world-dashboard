@@ -200,8 +200,10 @@ window.TAB_MAP = (function () {
   /* ── 지도 ── */
   function drawMap() {
     const wrap = U.$('#mapWrap');
-    const W = Math.max(320, wrap.clientWidth);
-    const H = Math.round(Math.min(620, Math.max(320, W * 0.52)));
+    const W = Math.max(300, wrap.clientWidth);
+    // 세계지도(남극 제외)의 가로세로비에 맞춰 높이를 잡습니다.
+    // 억지로 최소 높이를 주면 지도 위아래에 빈 공간만 생깁니다.
+    const H = Math.round(Math.min(620, Math.max(165, W * 0.53)));
 
     svg = d3.select('#worldMap');
     svg.selectAll('*').remove();
@@ -246,7 +248,7 @@ window.TAB_MAP = (function () {
       if (p && isFinite(p[0]) && isFinite(p[1])) dots.push({ iso3: c.iso3, xy: p, orphan: true });
     });
 
-    dotR = Math.max(2.8, Math.min(4.6, W / 240));
+    dotR = Math.max(4, Math.min(5.2, W / 220));
     gDots.selectAll('circle').data(dots, d => d.iso3).join('circle')
       .attr('class', 'dot-marker')
       .attr('data-iso', d => d.iso3)

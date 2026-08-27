@@ -6,6 +6,11 @@ window.TAB_TABLE = (function () {
   let state = null, sortKey = 'status', sortDir = 1;
   let q = '', fContinent = '', fStatus = '';
 
+  /* 기본은 시행 중·법 통과 국가만. 검색하거나 추진 상황을 직접 고르면 전체에서 찾습니다. */
+  const DEFAULT_STATUSES = ['enforced', 'passed'];
+  let showAll = false;
+  const isFiltered = () => !showAll && !fStatus && !q.trim();
+
   const STATUS_ORDER = Object.fromEntries(window.STATUS.map((s, i) => [s.key, i]));
 
   const COLS = [
@@ -57,7 +62,9 @@ window.TAB_TABLE = (function () {
 
   function rows() {
     const nq = U.normalize(q);
+    const limited = isFiltered();
     return state.countries.filter(c => {
+      if (limited && !DEFAULT_STATUSES.includes(c.status)) return false;
       if (fContinent && c.continent !== fContinent) return false;
       if (fStatus && c.status !== fStatus) return false;
       if (!nq) return true;
@@ -73,9 +80,79 @@ window.TAB_TABLE = (function () {
     });
   }
 
+  const CARD_BREAKPOINT = 760;
+  const isNarrow = () => window.innerWidth <= CARD_BREAKPOINT;
+
+  /* 좁은 화면에서는 10열 표 대신 국가 카드로 보여 줍니다. */
+  function renderCards(list) {
+    const host = U.clear(U.$('#cmpCards'));
+    list.forEach(c => {
+      const facts = [];
+      if (c.age) facts.push(c.age + '세');
+      if (c.usageRate !== null) facts.push(`이용률 ${c.usageRate}%`);
+      if (c.effectiveDate && c.effectiveDate !== '해당 없음' && c.effectiveDate !== '미정') {
+        facts.push(`시행 ${/^\d{4}-\d{2}/.test(c.effectiveDate) ? U.fmtDate(c.effectiveDate) : c.effectiveDate}`);
+      }
+
+      host.appendChild(U.h('button', {
+        class: 'cmp-card', type: 'button', onclick: () => window.MODAL.open(c, state)
+      }, [
+        U.h('div', { class: 'cmp-card-top' }, [
+          U.h('span', { class: 'cmp-card-name' }, [
+            U.h('span', { class: 'side-dot', style: { background: U.statusColor(c.status) } }),
+            c.name
+          ]),
+          U.h('span', { class: 'badge', 'data-status': c.status }, U.statusLabel(c.status))
+        ]),
+        facts.length ? U.h('div', { class: 'cmp-card-facts' }, facts.join('  ·  ')) : null,
+        c.scope.length ? U.h('div', { class: 'cmp-card-scope' },
+          c.scope.slice(0, 3).join(', ') + (c.scope.length > 3 ? ` 외 ${c.scope.length - 3}` : '')) : null,
+        U.h('div', { class: 'cmp-card-meta' },
+          c.continent + (c.updated ? ` · 최종 확인 ${U.fmtDate(c.updated)}` : ''))
+      ]));
+    });
+    if (!list.length) host.appendChild(U.h('div', { class: 'empty' }, '조건에 맞는 국가가 없습니다.'));
+  }
+
   function renderBody() {
-    const tbody = U.clear(U.$('#cmpTable tbody'));
     const list = rows();
+    const narrow = isNarrow();
+    U.$('.table-scroll').hidden = narrow;
+    U.$('#cmpCards').hidden = !narrow;
+    const sub = U.$('#panel-table .card-sub');
+    if (sub) {
+      const base = narrow
+        ? '카드를 누르면 상세 정보가 열립니다.'
+        : '열 제목을 클릭하면 정렬됩니다. 행을 클릭하면 상세 정보가 열립니다.';
+      sub.textContent = isFiltered()
+        ? base + ' 검색하면 전체 국가에서 찾습니다.'
+        : base;
+    }
+    if (narrow) { renderCards(list); renderFoot(list); return; }
+    renderTable(list);
+    renderFoot(list);
+  }
+
+  function renderFoot(list) {
+    const foot = U.clear(U.$('#tableFoot'));
+    const total = state.countries.length;
+    const limited = isFiltered();
+
+    foot.appendChild(U.h('span', { class: 'table-foot-text' },
+      limited
+        ? `시행 중·법 통과 ${list.length}개국을 보고 있습니다. 전체는 ${total}개국입니다.`
+        : `${list.length}개국 표시 (전체 ${total}개국) · 최종 확인 일자는 각 항목의 자료를 마지막으로 검증한 날짜입니다.`));
+
+    if (!fStatus && !q.trim()) {
+      foot.appendChild(U.h('button', {
+        class: 'btn-ghost table-more', type: 'button',
+        onclick: () => { showAll = !showAll; renderBody(); }
+      }, showAll ? '시행·통과 국가만 보기' : `전체 ${total}개국 보기`));
+    }
+  }
+
+  function renderTable(list) {
+    const tbody = U.clear(U.$('#cmpTable tbody'));
     list.forEach(c => {
       const tr = U.h('tr', { onclick: () => window.MODAL.open(c, state) });
       COLS.forEach(col => {
@@ -96,8 +173,6 @@ window.TAB_TABLE = (function () {
     if (!list.length) {
       tbody.appendChild(U.h('tr', {}, U.h('td', { colspan: COLS.length, class: 'empty' }, '조건에 맞는 국가가 없습니다.')));
     }
-    U.$('#tableFoot').textContent =
-      `${list.length}개국 표시 (전체 ${state.countries.length}개국) · 최종 확인 일자는 각 항목의 자료를 마지막으로 검증한 날짜입니다.`;
   }
 
   function exportCSV() {
@@ -116,5 +191,12 @@ window.TAB_TABLE = (function () {
   U.$('#tableStatus').addEventListener('change', e => { fStatus = e.target.value; renderBody(); });
   U.$('#csvExport').addEventListener('click', exportCSV);
 
-  return { render, resize() {} };
+  let lastNarrow = null;
+  function resize() {
+    if (!state) return;
+    const n = isNarrow();
+    if (n !== lastNarrow) { lastNarrow = n; renderBody(); }
+  }
+
+  return { render, resize };
 })();

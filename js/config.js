@@ -26,8 +26,7 @@ window.APP_CONFIG = {
     koreaBills:     'korea_bills',      // 대한민국 — 발의 법안
     koreaUsage:     'korea_usage',      // 대한민국 — 연령대별 이용률
     koreaPolls:     'korea_polls',      // 대한민국 — 여론조사
-    koreaIssues:    'korea_issues',     // 대한민국 — 주요 쟁점
-    meta:           'meta'              // 디스클레이머·최종 갱신일 등 (key/value)
+    meta:           'meta'              // AI 활용 고지·최종 갱신일 등 (key/value)
   },
 
   /* [선택] 시트 이름 대신 "웹에 게시"로 만든 CSV 주소를 직접 지정할 수도 있습니다.

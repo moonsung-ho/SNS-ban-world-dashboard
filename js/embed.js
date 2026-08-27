@@ -136,9 +136,12 @@ window.EMBED = (function () {
         U.h('a', { class: 'embed-credit-link', href: full, target: '_blank', rel: 'noopener' },
           '전체 대시보드 보기 ↗')
       ]),
-      U.h('div', { class: 'embed-credit-note', html:
-        (data && data.meta && data.meta.disclaimer ? data.meta.disclaimer : '') +
-        (data && data.meta && data.meta.updated ? ` 최종 갱신 ${U.fmtDate(data.meta.updated)}.` : '') })
+      data && data.meta && data.meta.updated
+        ? U.h('div', { class: 'embed-credit-note' }, `최종 갱신 ${U.fmtDate(data.meta.updated)}`)
+        : null,
+      data && data.meta && data.meta.aiNote
+        ? U.h('div', { class: 'embed-credit-note embed-credit-ai', html: data.meta.aiNote })
+        : null
     ]);
     return bar;
   }

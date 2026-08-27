@@ -38,12 +38,10 @@
     korea_polls: toCSV(['question','org','date','pro','con','neu'],
       D.korea.polls.map(p => [p.question, p.org, p.date, p.pro, p.con, p.neu])),
 
-    korea_issues: toCSV(['title','body'], D.korea.issues.map(i => [i.title, i.body])),
-
     meta: toCSV(['key','value'], [
       ['updated', D.meta.updated],
       ['title', D.meta.title],
-      ['disclaimer', D.meta.disclaimer],
+      ['ai_note', D.meta.aiNote],
       ['korea_steps', (D.korea.steps || ['발의','소위 심사','상임위 의결','법사위','본회의','공포']).join('; ')]
     ])
   };

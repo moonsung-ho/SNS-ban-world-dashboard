@@ -43,7 +43,8 @@ window.MODAL = (function () {
     if (window.SHARE) {
       const shareBox = U.h('div', { class: 'm-share' });
       head.appendChild(shareBox);
-      window.SHARE.build(shareBox, {
+      const single = window.innerWidth <= 760;
+      (single ? window.SHARE.buildSingle : window.SHARE.build)(shareBox, {
         country: country.iso3,
         label: '이 국가 공유',
         title: `${country.name} — SNS 규제 현황`,

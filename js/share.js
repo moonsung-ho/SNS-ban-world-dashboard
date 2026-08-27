@@ -113,5 +113,37 @@ window.SHARE = (function () {
     return url;
   }
 
-  return { build, canonical, copy };
+  /* 버튼 하나만 두는 형태 (모바일용).
+     기기 공유 시트를 쓸 수 있으면 그것으로, 아니면 링크 복사로 대체합니다. */
+  function buildSingle(host, opts) {
+    if (!host) return;
+    U.clear(host);
+    opts = opts || {};
+    const url = canonical(opts);
+    const text = opts.text || document.title;
+    const native = typeof navigator.share === 'function';
+
+    const btn = U.h('button', {
+      class: 'share-single', type: 'button',
+      html: svg(native ? 'share' : 'link') +
+            '<span>' + U.esc(native ? '공유하기' : '링크 복사') + '</span>',
+      onclick: async () => {
+        if (native) {
+          navigator.share({ title: opts.title || text, text: text, url: url }).catch(() => {});
+          return;
+        }
+        const ok = await copy(url);
+        if (!ok) return;
+        btn.innerHTML = svg('check') + '<span>복사했습니다</span>';
+        btn.classList.add('is-done');
+        setTimeout(() => {
+          btn.innerHTML = svg('link') + '<span>링크 복사</span>';
+          btn.classList.remove('is-done');
+        }, 1700);
+      }
+    });
+    host.appendChild(btn);
+  }
+
+  return { build, buildSingle, canonical, copy };
 })();

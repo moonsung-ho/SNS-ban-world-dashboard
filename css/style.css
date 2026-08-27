@@ -147,6 +147,7 @@ a{color:var(--accent); text-underline-offset:3px}
 
 .header-tools{margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
 .header-share{display:inline-flex; align-items:center; gap:7px}
+.header-share-one{display:none}
 .header-action{
   display:inline-flex; align-items:center; gap:6px;
   color:var(--text-2); text-decoration:none; font-size:13px; font-weight:620;
@@ -202,6 +203,19 @@ a{color:var(--accent); text-underline-offset:3px}
 .share-btn:hover{background:var(--accent-soft); color:var(--accent)}
 .share-btn.is-done{background:var(--accent-soft); color:var(--accent)}
 
+/* 좁은 화면용 단일 공유 버튼 */
+.share-single{
+  display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-family:inherit;
+  border:1px solid var(--border); border-radius:9px; background:var(--surface-2);
+  color:var(--text-2); font-size:14px; font-weight:650; padding:10px 16px 10px 13px;
+}
+.share-single svg{width:16px; height:16px; display:block; flex:0 0 auto}
+.share-single:active{background:var(--surface-3)}
+.share-single.is-done{
+  color:var(--accent); background:var(--accent-soft);
+  border-color:color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
 .theme-toggle{
   flex:0 0 auto; width:36px; height:36px; border-radius:10px;
   background:var(--surface-2); border:1px solid var(--border); cursor:pointer;
@@ -220,7 +234,12 @@ a{color:var(--accent); text-underline-offset:3px}
 /* ---------- 탭 ---------- */
 .tabs{
   background:var(--surface); border-bottom:1px solid var(--border);
-  position:sticky; top:var(--header-h, 58px); z-index:55;
+  position:sticky; top:var(--header-h, 58px); z-index:55; position:sticky;
+}
+/* 탭이 넘칠 때 오른쪽에 더 있다는 신호 */
+.tabs::after{
+  content:""; position:absolute; right:0; top:0; bottom:1px; width:34px; pointer-events:none;
+  background:linear-gradient(90deg, transparent, var(--surface) 72%);
 }
 .tabs-inner{
   max-width:var(--maxw); margin:0 auto; padding:0 24px;
@@ -450,7 +469,30 @@ main{max-width:var(--maxw); margin:0 auto; padding:22px 24px 60px}
 .cmp-table tbody tr{cursor:pointer}
 .cmp-table tbody tr:hover td{background:var(--surface-2)}
 .cell-wrap{display:block; max-width:290px}
-.table-foot{padding:11px 18px; font-size:13px; color:var(--text-3)}
+.table-foot{
+  display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  padding:13px 18px 15px; font-size:13px; color:var(--text-3);
+}
+.table-foot-text{flex:1 1 220px; min-width:0}
+.table-more{flex:0 0 auto}
+
+/* 좁은 화면용 국가 카드 */
+.cmp-cards{display:flex; flex-direction:column; gap:8px; padding:12px 15px 4px}
+.cmp-card{
+  appearance:none; font-family:inherit; text-align:left; width:100%; cursor:pointer;
+  background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm);
+  padding:11px 13px; color:inherit;
+}
+.cmp-card:active{background:var(--surface-3)}
+.cmp-card-top{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.cmp-card-name{display:flex; align-items:center; gap:8px; font-size:15.5px; font-weight:680}
+.cmp-card-facts{
+  margin-top:5px; font-size:13.5px; color:var(--text); font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+.cmp-card-scope{margin-top:4px; font-size:13px; color:var(--text-2)}
+.cmp-card-meta{margin-top:6px; font-size:12px; color:var(--text-3)}
+
 .mini-flag{margin-right:6px}
 
 /* ---------- 연령 분포 ---------- */
@@ -489,6 +531,16 @@ main{max-width:var(--maxw); margin:0 auto; padding:22px 24px 60px}
   text-align:center; font-size:14px; font-weight:700;
 }
 
+/* 좁은 화면용 — 연령별 묶음 목록 */
+.age-rows{display:flex; flex-direction:column; gap:18px; padding:12px 0 6px}
+.age-row-head{
+  display:flex; align-items:baseline; gap:9px; margin-bottom:9px;
+  font-size:15px; font-weight:730;
+}
+.age-row-head span:last-child{font-size:12.5px; font-weight:650; color:var(--accent)}
+.age-row-blocks{display:flex; flex-wrap:wrap; gap:5px}
+.age-rows .age-block{width:auto; padding:8px 12px; font-size:13.5px}
+
 /* ---------- 실효성 ---------- */
 .kv-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(268px,1fr)); gap:13px; padding:4px 18px 20px}
 .kv-card{background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:13px 15px}
@@ -515,6 +567,7 @@ main{max-width:var(--maxw); margin:0 auto; padding:22px 24px 60px}
 .bill-step.done{color:var(--text-2); font-weight:600}
 .bill-step.current .bar{background:var(--accent)}
 .bill-step.current{color:var(--accent); font-weight:700}
+.bill-current{display:none}
 
 .poll-list{padding:2px 18px 18px; display:flex; flex-direction:column; gap:14px}
 .poll{border-bottom:1px solid var(--border); padding-bottom:13px}
@@ -641,11 +694,12 @@ main{max-width:var(--maxw); margin:0 auto; padding:22px 24px 60px}
 /* ---------- 푸터 ---------- */
 .site-footer{border-top:1px solid var(--border); background:var(--surface); margin-top:8px}
 .footer-inner{max-width:var(--maxw); margin:0 auto; padding:20px 24px 26px}
-.footer-inner .disclaimer{
-  font-size:13px; line-height:1.62; color:var(--text-3); max-width:none;
-  border-left:0; padding-left:0; margin-bottom:12px;
+.footer-inner .ai-note{
+  font-size:12.5px; line-height:1.62; color:var(--text-3);
+  margin:0 0 14px;
 }
-.footer-inner .disclaimer b{color:var(--text-2); font-weight:600}
+.footer-inner .ai-note a{color:var(--accent); text-decoration:none; font-weight:600}
+.footer-inner .ai-note a:hover{text-decoration:underline}
 .footer-meta{
   display:flex; gap:8px; flex-wrap:wrap; font-size:12.5px; color:var(--text-3);
   padding-top:12px; border-top:1px solid var(--border);
@@ -655,24 +709,85 @@ main{max-width:var(--maxw); margin:0 auto; padding:22px 24px 60px}
 .empty{padding:40px 18px; text-align:center; color:var(--text-3); font-size:14.5px}
 
 @media (max-width:760px){
-  .header-inner{padding:11px 16px; gap:10px}
-  .header-tools{gap:7px}
-  .header-action{padding:6px 10px 6px 8px; font-size:12.5px}
-  .header-action span{display:none}
-  .header-share .share-label{display:none}
+  /* 헤더 — 로고·바로가기·테마만 남기고 공유/임베드는 푸터로 */
+  .header-inner{padding:10px 14px; gap:9px}
+  .header-tools{gap:8px}
+  .header-share, #embedLink, #homeLink{display:none}
+  .header-share-one{display:inline-flex}
+
+  .footer-inner{padding:18px 16px 24px}
+  .m-share .share-single{padding:9px 14px 9px 12px; font-size:13.5px}
+  .share-single{padding:8px 14px 8px 11px; font-size:13.5px}
+
   .tabs{top:auto; position:static}
-  .tabs-inner{padding:0 16px}
-  main{padding:16px 16px 48px}
-  .modal-body{padding:22px 20px 24px}
+  .tabs-inner{padding:0 14px}
+  .tab{padding:12px 12px 11px; font-size:15px}
+  main{padding:14px 14px 44px}
+
+  .card-head{padding:15px 15px 11px}
+  .stat-row{grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px}
+  .stat{padding:11px 12px}
+  .stat-num{font-size:24px}
+  .stat-label{font-size:12.5px}
+
+  /* 지도 — 세로 여백을 줄이고 조작 버튼을 키움 */
+  .map-tools{gap:7px}
+  .btn-ghost{padding:8px 13px}
+  .map-player{padding:12px 15px 2px}
+  .legend{padding:11px 15px 15px; gap:7px}
+  .legend-item{padding:6px 12px 6px 8px}
+  .side-card{max-height:none}
+  .side-list{max-height:340px}
+
+  /* 표는 카드로 대체 */
+  .table-scroll{display:none}
+  .table-tools{width:100%}
+  .table-tools input{width:100%}
+  .table-tools select{flex:1 1 0; min-width:0}
+  .table-foot{padding:12px 15px 16px}
+  .table-more{width:100%; padding:10px 12px}
+
+  /* 팝업은 전체 화면 시트로 */
+  .modal-backdrop{padding:0; align-items:stretch}
+  .modal{
+    width:100%; max-width:none; height:100%; max-height:100%;
+    border-radius:0; border:0; animation:sheet .2s cubic-bezier(.2,.8,.3,1);
+  }
+  .modal-body{padding:20px 16px 32px}
   .m-name{font-size:24px}
-  .stat-row{gap:9px}
+  .m-summary{font-size:15.5px; padding-left:12px}
+
+  /* 법안 단계 — 라벨이 두 줄로 깨지지 않게 */
+  .bill-list, .poll-list, .kv-cards, .bill{padding-left:0; padding-right:0}
+  .bill-list{padding:2px 15px 16px}
+  .bill-steps{gap:3px}
+  .bill-step{font-size:0}
+  .bill-step .bar{height:6px; margin-bottom:0}
+  .bill-current{
+    display:block; margin-top:9px; font-size:12.5px; font-weight:650; color:var(--accent);
+  }
+
+  .kv-cards, .age-scroll{padding-left:15px; padding-right:15px}
+  .timeline{padding:4px 15px 18px}
+  .chart-wrap{padding:4px 6px 10px}
+}
+@keyframes sheet{from{opacity:0; transform:translateY(16px)}to{opacity:1; transform:none}}
+
+/* 아주 좁은 화면 */
+@media (max-width:400px){
+  .header-inner{padding:10px 12px}
+  .header-share-one .share-single{padding:8px 11px 8px 9px; font-size:13px; gap:6px}
+  main{padding:12px 12px 40px}
+  .stat{padding:10px 11px}
+  .stat-num{font-size:22px}
+  .stat-label{font-size:12px}
 }
 
-/* 아주 좁은 화면에서는 헤더 버튼을 아이콘만 남깁니다(레이블은 title/스크린리더용으로 유지). */
-@media (max-width:600px){
-  .header-action{font-size:0; gap:0; padding:7px 9px}
-  .header-action svg{width:16px; height:16px; opacity:1}
+@media (max-width:330px){
+  .header-share-one .share-single span{display:none}
+  .header-share-one .share-single{padding:8px 10px; gap:0}
 }
+
 
 /* ===========================================================
    임베드 모드 — 기사 페이지의 iframe 안에서 표시될 때
@@ -722,6 +837,9 @@ main{max-width:var(--maxw); margin:0 auto; padding:22px 24px 60px}
 .embed-credit-link:hover{text-decoration:underline}
 .embed-credit-note{line-height:1.5}
 .embed-credit-note b{color:var(--text-2); font-weight:600}
+.embed-credit-ai{margin-top:5px; padding-top:5px; border-top:1px solid var(--border)}
+.embed-credit-ai a{color:var(--accent); text-decoration:none; font-weight:600}
+.embed-credit-ai a:hover{text-decoration:underline}
 
 /* 짧은 iframe 안에서는 팝업을 전체 화면 시트처럼 */
 :root[data-embed] .modal-backdrop{padding:0}

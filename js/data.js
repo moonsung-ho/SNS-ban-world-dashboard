@@ -234,7 +234,7 @@ window.DATA = (function () {
     })).filter(c => c.title || c.body);
   }
 
-  function normKorea(bills, usage, polls, issues, stats, meta) {
+  function normKorea(bills, usage, polls, stats, meta) {
     return {
       stats: stats.map(r => ({
         label: pickText(r, ['label', '항목']),
@@ -265,11 +265,7 @@ window.DATA = (function () {
         pro: window.U.num(r.pro ?? r['찬성']) || 0,
         con: window.U.num(r.con ?? r['반대']) || 0,
         neu: window.U.num(r.neu ?? r['유보']) || 0
-      })).filter(p => p.question),
-      issues: issues.map(r => ({
-        title: pickText(r, ['title', '제목']),
-        body:  pickText(r, ['body', '내용'])
-      })).filter(i => i.title)
+      })).filter(p => p.question)
     };
   }
 
@@ -286,7 +282,7 @@ window.DATA = (function () {
   async function loadFromSheets() {
     const S = CFG.sheets;
     const names = ['countries','timeline','bypass','efficacyUsage','efficacyCards',
-                   'koreaStats','koreaBills','koreaUsage','koreaPolls','koreaIssues','meta'];
+                   'koreaStats','koreaBills','koreaUsage','koreaPolls','meta'];
     const results = await Promise.all(names.map(n => fetchSheet(S[n])));
     const r = Object.fromEntries(names.map((n, i) => [n, results[i]]));
     const meta = normMeta(r.meta);
@@ -296,7 +292,7 @@ window.DATA = (function () {
       meta: {
         updated: meta.updated || '',
         title: meta.title || 'SNS 금지법 전 세계 추진 현황',
-        disclaimer: meta.disclaimer || window.SAMPLE_DATA.meta.disclaimer
+        aiNote: meta.ai_note || window.SAMPLE_DATA.meta.aiNote
       },
       countries: normCountries(r.countries),
       timeline: normTimeline(r.timeline),
@@ -305,7 +301,7 @@ window.DATA = (function () {
         dumbbell: normDumbbell(r.efficacyUsage),
         cards: normCards(r.efficacyCards)
       },
-      korea: normKorea(r.koreaBills, r.koreaUsage, r.koreaPolls, r.koreaIssues, r.koreaStats, meta)
+      korea: normKorea(r.koreaBills, r.koreaUsage, r.koreaPolls, r.koreaStats, meta)
     };
   }
 

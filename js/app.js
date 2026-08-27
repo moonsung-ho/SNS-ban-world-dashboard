@@ -95,14 +95,16 @@
     age: '연령별 분포', efficacy: '실효성', korea: '대한민국 추진 현황'
   };
   function updateShare(key) {
-    const host = U.$('#headerShare');
-    if (!host || !window.SHARE || (window.EMBED && window.EMBED.on)) return;
+    if (!window.SHARE || (window.EMBED && window.EMBED.on)) return;
     const base = (state && state.meta && state.meta.title) || 'SNS 금지법 전 세계 추진 현황';
-    window.SHARE.build(host, {
-      tab: key,
-      title: base,
+    const opts = {
+      tab: key, title: base,
       text: `${base}${TAB_LABEL[key] ? ` — ${TAB_LABEL[key]}` : ''} · 토끼풀`
-    });
+    };
+    // 넓은 화면은 묶음 버튼, 좁은 화면은 공유 버튼 하나 — 둘 다 헤더에 있습니다.
+    // 둘 다 그려 두고 화면 크기에 따라 CSS 로 하나만 보여 줍니다.
+    if (U.$('#headerShare')) window.SHARE.build(U.$('#headerShare'), opts);
+    if (U.$('#headerShareOne')) window.SHARE.buildSingle(U.$('#headerShareOne'), opts);
   }
 
   /* ── 헤더 높이를 탭 sticky 오프셋에 반영 ── */
@@ -132,22 +134,10 @@
 
   /* ── 헤더 표시 갱신 ── */
   function applyMeta(data) {
-    const badge = U.$('#dataModeBadge');
-    if (data.source === 'sheets') {
-      badge.textContent = '실시간 데이터';
-      badge.title = '구글 시트에서 불러온 자료입니다.';
-    } else if (data.source === 'sample-fallback') {
-      badge.textContent = '예시 데이터 (시트 연결 실패)';
-      badge.title = data.loadError || '';
-      badge.style.borderColor = 'var(--bad)';
-      badge.style.color = 'var(--bad)';
-      badge.style.background = 'transparent';
+    if (data.source === 'sample-fallback') {
       console.warn('구글 시트를 불러오지 못해 예시 데이터로 표시합니다:', data.loadError);
-    } else {
-      badge.textContent = '예시 데이터';
-      badge.title = 'js/config.js 의 dataSource 를 sheets 로 바꾸면 구글 시트를 사용합니다.';
     }
-    if (data.meta && data.meta.disclaimer) U.$('#disclaimerText').innerHTML = data.meta.disclaimer;
+    if (data.meta && data.meta.aiNote && U.$('#aiNote')) U.$('#aiNote').innerHTML = data.meta.aiNote;
     U.$('#footerUpdated').textContent = data.meta && data.meta.updated
       ? `최종 갱신 ${U.fmtDate(data.meta.updated)}` : '';
     if (data.meta && data.meta.title) document.title = data.meta.title + ' · 토끼풀';

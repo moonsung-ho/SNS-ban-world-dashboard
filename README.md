@@ -48,10 +48,10 @@
 ### 1. 시트 만들기
 
 1. 구글 시트 새 문서를 만듭니다.
-2. 하단 워크시트 탭을 아래 11개 이름으로 만듭니다. **이름이 정확히 일치해야 합니다.**
+2. 하단 워크시트 탭을 아래 10개 이름으로 만듭니다. **이름이 정확히 일치해야 합니다.**
 
    `countries` · `timeline` · `bypass` · `efficacy_usage` · `efficacy_cards` ·
-   `korea_stats` · `korea_bills` · `korea_usage` · `korea_polls` · `korea_issues` · `meta`
+   `korea_stats` · `korea_bills` · `korea_usage` · `korea_polls` · `meta`
 
 3. 각 탭에서 **파일 › 가져오기 › 업로드**로 `sheets/` 폴더의 같은 이름 CSV를 넣고
    **현재 시트 바꾸기**를 선택합니다. 예시 데이터가 그대로 들어갑니다.
@@ -158,10 +158,9 @@ sheetId: '복사한_문서_ID',
 `name`, `proposer`, `party`, `date`, `age`, `step`, `summary`, `url`.
 `step` 은 진행 단계 번호(1부터). 단계 이름은 `meta` 시트의 `korea_steps` 로 바꿉니다.
 
-### `korea_usage` / `korea_polls` / `korea_issues`
+### `korea_usage` / `korea_polls`
 - `korea_usage`: `group`(연령대), `value`(%)
 - `korea_polls`: `question`, `org`, `date`, `pro`, `con`, `neu` (합이 100이 아니어도 비율로 환산)
-- `korea_issues`: `title`, `body`
 
 ### `meta` — 문서 전역 설정 (`key` / `value` 두 열)
 
@@ -169,7 +168,7 @@ sheetId: '복사한_문서_ID',
 |---|---|
 | `updated` | 최종 갱신일. 하단 푸터에 표시 |
 | `title` | 문서 제목 |
-| `disclaimer` | 헤더 디스클레이머 문구. `<b>` 등 간단한 HTML 사용 가능 |
+| `ai_note` | AI 활용 고지 문구. `<a href>` 링크 포함 가능 |
 | `korea_steps` | 법안 진행 단계 이름. 세미콜론 구분 |
 
 ---

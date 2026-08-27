@@ -11,7 +11,6 @@ window.TAB_KOREA = (function () {
     renderBills();
     drawUsage();
     renderPolls();
-    renderIssues();
   }
 
   function renderStats() {
@@ -49,6 +48,10 @@ window.TAB_KOREA = (function () {
         ]));
       });
       el.appendChild(stepBox);
+      // 좁은 화면에서는 단계 이름이 들어갈 자리가 없어 현재 단계만 글로 알려 줍니다.
+      const cur = steps[Math.min(steps.length, Math.max(1, b.step)) - 1];
+      el.appendChild(U.h('span', { class: 'bill-current' },
+        `현재 ${cur} (${Math.min(b.step, steps.length)}/${steps.length}단계)`));
 
       if (b.url) {
         el.appendChild(U.h('div', { style: { marginTop: '9px', fontSize: '12px' } },
@@ -78,16 +81,6 @@ window.TAB_KOREA = (function () {
       ]));
     });
     if (!box.children.length) box.appendChild(U.h('div', { class: 'empty' }, '등록된 조사가 없습니다.'));
-  }
-
-  function renderIssues() {
-    const box = U.clear(U.$('#koreaIssues'));
-    (state.korea.issues || []).forEach(i => {
-      box.appendChild(U.h('div', { class: 'kv-card' }, [
-        U.h('h4', {}, i.title),
-        U.h('p', {}, i.body)
-      ]));
-    });
   }
 
   function resize() { if (state) drawUsage(); }
