@@ -181,7 +181,10 @@ sheetId: '복사한_문서_ID',
 > 이 시트는 **없어도 됩니다.** 탭을 만들지 않으면 국가별 출처만 표시되고 나머지는 그대로 동작합니다.
 
 ### `korea_usage` / `korea_polls`
-- `korea_usage`: `group`(연령대), `value`(%)
+- `korea_usage`: `group`(연령대), `value`(%), `highlight`(선택)
+  - 규제 대상 연령대는 붉은색으로 강조됩니다. `highlight` 열을 비워 두면
+    `20대`·`30대` 같은 성인 표기가 **아닌** 항목을 자동으로 청소년으로 봅니다.
+  - 자동 판별이 맞지 않으면 `highlight` 열에 `1`(강조) 또는 `0`(강조 안 함)을 직접 넣으세요.
 - `korea_polls`: `question`, `org`, `date`, `pro`, `con`, `neu` (합이 100이 아니어도 비율로 환산)
 
 ### `meta` — 문서 전역 설정 (`key` / `value` 두 열)

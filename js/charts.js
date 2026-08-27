@@ -125,7 +125,12 @@ window.CHARTS = (function () {
     const x = d3.scaleLinear().domain([0, 100]).range([m.l, w - m.r]);
     const y = d3.scaleBand().domain(rows.map(r => r.group)).range([m.t, h - m.b]).padding(.28);
     const g = svg.append('g');
-    const youth = new Set(['초4–6', '중1–3', '고1–3']);
+    /* 규제 대상 연령대를 강조합니다.
+       시트에 highlight 열이 있으면 그 값을 쓰고, 없으면 "20대·30대" 같은 성인 표기가
+       아닌 항목(초4, 중1, 고3, 13~15세 …)을 청소년으로 봅니다. */
+    const isYouth = r => (r.highlight !== null && r.highlight !== undefined)
+      ? !!r.highlight
+      : !/^\s*\d+\s*대/.test(r.group || '');
 
     g.selectAll('line.gl').data(x.ticks(5)).join('line')
       .attr('class', 'grid-line').attr('y1', m.t - 4).attr('y2', h - m.b)
@@ -137,7 +142,7 @@ window.CHARTS = (function () {
     g.selectAll('rect').data(rows).join('rect')
       .attr('x', x(0)).attr('y', r => y(r.group)).attr('height', y.bandwidth())
       .attr('width', r => Math.max(2, x(r.value) - x(0))).attr('rx', 3)
-      .attr('fill', r => youth.has(r.group) ? U.cssVar('--st-enforced') : U.cssVar('--surface-3'));
+      .attr('fill', r => isYouth(r) ? U.cssVar('--st-enforced') : U.cssVar('--surface-3'));
     g.selectAll('text.lab').data(rows).join('text')
       .attr('class', 'tick-text-strong').attr('x', m.l - 9)
       .attr('y', r => y(r.group) + y.bandwidth() / 2)

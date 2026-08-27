@@ -287,10 +287,14 @@ window.DATA = (function () {
         summary: pickText(r, ['summary', '요지']),
         url: r.url || ''
       })).filter(b => b.name),
-      usage: usage.map(r => ({
-        group: pickText(r, ['group', '연령대']),
-        value: window.U.num(r.value ?? r['이용률'])
-      })).filter(u => u.group && u.value !== null),
+      usage: usage.map(r => {
+        const flag = pickText(r, ['highlight', '강조']);
+        return {
+          group: pickText(r, ['group', '연령대']),
+          value: window.U.num(r.value ?? r['이용률']),
+          highlight: flag === '' ? null : /^(1|y|yes|true|o|예|참)$/i.test(flag.trim())
+        };
+      }).filter(u => u.group && u.value !== null),
       polls: polls.map(r => ({
         question: pickText(r, ['question', '문항']),
         org: pickText(r, ['org', '대상']),
